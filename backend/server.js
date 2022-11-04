@@ -8,6 +8,8 @@ import morgan from "morgan";
 import {notFound, errorHandler} from "./middleware/errorMiddleware.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
+import path from "path";
 
 dotenv.config();
 
@@ -25,6 +27,11 @@ app.use(cors)
 
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/upload", uploadRoutes);
+
+// Make the uploads folder a static folder to upload our images
+const __dirname = path.resolve();
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 if (process.env.NODE_ENV === "production") {
     console.log("PRODUCTION".red.bold)

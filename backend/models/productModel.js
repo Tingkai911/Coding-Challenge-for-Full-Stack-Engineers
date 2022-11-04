@@ -16,7 +16,6 @@ const productSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
-        // TODO: replace with bytes or something for image
         image: {
             type: String,
             required: false,
