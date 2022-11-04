@@ -20,6 +20,9 @@ export default function UserEditScreen({history, match}) {
     const userDetails = useSelector((state) => state.userDetails);
     const {loading, error, user} = userDetails;
 
+    const userLogin = useSelector((state) => state.userLogin);
+    const {userInfo} = userLogin;
+
     const userUpdate = useSelector((state) => state.userUpdate);
     const {
         loading: loadingUpdate,
@@ -28,21 +31,26 @@ export default function UserEditScreen({history, match}) {
     } = userUpdate;
 
     useEffect(() => {
-        // If update successful, update the user state and redirect to the user list
-        if (successUpdate) {
-            dispatch({type: USER_UPDATE_RESET});
-            history.push("/admin/userlist");
+        if (!userInfo) {
+            // If the user is not login, redirect him to the login page
+            history.push("/login");
         } else {
-            // If the user details don't exist or the user id does not match the URL
-            if (!user || user._id !== userId) {
-                dispatch(getUserDetails(userId));
+            // If update successful, update the user state and redirect to the user list
+            if (successUpdate) {
+                dispatch({type: USER_UPDATE_RESET});
+                history.push("/admin/userlist");
             } else {
-                setName(user.name);
-                setEmail(user.email);
-                setIsAdmin(user.isAdmin);
+                // If the user details don't exist or the user id does not match the URL
+                if (!user || user._id !== userId) {
+                    dispatch(getUserDetails(userId));
+                } else {
+                    setName(user.name);
+                    setEmail(user.email);
+                    setIsAdmin(user.isAdmin);
+                }
             }
         }
-    }, [dispatch, history, user, userId, successUpdate]);
+    }, [dispatch, history, user, userId, successUpdate, userInfo]);
 
     const submitHandler = (e) => {
         e.preventDefault();

@@ -21,6 +21,9 @@ export default function ProductEditScreen({history, match}) {
     const productDetails = useSelector((state) => state.productDetails);
     const {loading, error, product} = productDetails;
 
+    const userLogin = useSelector((state) => state.userLogin);
+    const {userInfo} = userLogin;
+
     const productUpdate = useSelector((state) => state.productUpdate);
     const {
         loading: loadingUpdate,
@@ -37,27 +40,32 @@ export default function ProductEditScreen({history, match}) {
     } = productCreate;
 
     useEffect(() => {
-        if (successCreate) {
-            // If the product is created successfully, redirect them to the product screen
-            sku = createdProduct.sku;
-            dispatch({type: PRODUCT_CREATE_RESET});
-            history.push(`/product/${sku}`)
-        } else if (successUpdate) {
-            dispatch({type: PRODUCT_UPDATE_RESET});
-            dispatch(listProductDetails(sku));
-            history.push(`/product/${product.sku}`)
+        if (!userInfo) {
+            // If the user is not login, redirect him to the login page
+            history.push("/login");
         } else {
-            if (sku === "null") {
-                setTitle("Sample Title");
-                setImage("/images/sample.jpg");
-            } else if (!product || product.sku !== sku) {
+            if (successCreate) {
+                // If the product is created successfully, redirect them to the product screen
+                sku = createdProduct.sku;
+                dispatch({type: PRODUCT_CREATE_RESET});
+                history.push(`/product/${sku}`)
+            } else if (successUpdate) {
+                dispatch({type: PRODUCT_UPDATE_RESET});
                 dispatch(listProductDetails(sku));
+                history.push(`/product/${product.sku}`)
             } else {
-                setTitle(product.title);
-                setImage(product.image);
+                if (sku === "null") {
+                    setTitle("Sample Title");
+                    setImage("/images/sample.jpg");
+                } else if (!product || product.sku !== sku) {
+                    dispatch(listProductDetails(sku));
+                } else {
+                    setTitle(product.title);
+                    setImage(product.image);
+                }
             }
         }
-    }, [dispatch, history, product, sku, successUpdate, successCreate]);
+    }, [dispatch, history, product, sku, successUpdate, successCreate, userInfo]);
 
     const submitHandler = (e) => {
         e.preventDefault();
