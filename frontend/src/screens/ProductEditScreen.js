@@ -8,6 +8,7 @@ import Loader from "../components/Loader";
 import FormContainer from "../components/FormContainer";
 import {listProductDetails, updateProduct, createProduct} from "../actions/productActions";
 import {PRODUCT_CREATE_RESET, PRODUCT_UPDATE_RESET} from "../constants/productConstants";
+import Meta from "../components/Meta";
 
 export default function ProductEditScreen({history, match}) {
     let sku = match.params.sku;
@@ -118,6 +119,7 @@ export default function ProductEditScreen({history, match}) {
             <Link to="/" className="btn btn-light my3">
                 Go Back
             </Link>
+            <Meta title={sku === "null" ? "Create" : "Update"} Product/>
             <FormContainer>
                 <h1>{sku === "null" ? "Create" : "Update"} Product</h1>
                 {sku !== "null" && loadingUpdate && <Loader/>}

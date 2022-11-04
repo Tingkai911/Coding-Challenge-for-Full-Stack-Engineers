@@ -45,7 +45,6 @@ export default function HomeScreen({history, match}) {
                     </Button>
                 </Col>
             </Row>
-            <h1>Latest Products</h1>
             {loading ? (
                 <Loader/>
             ) : error ? (
