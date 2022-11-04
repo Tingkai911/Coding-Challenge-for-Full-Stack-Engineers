@@ -63,7 +63,24 @@ export const login = (email, password) => async (dispatch) => {
     }
 };
 
-export const logout = () => (dispatch) => {
+export const logout = () => async (dispatch, getState) => {
+    // Get the token
+    const {
+        userLogin: {userInfo},
+    } = getState();
+
+    // To send the content type and the token in the header
+    const config = {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userInfo.token}`,
+        },
+    };
+
+    // TODO: Not working, worry about this later
+    console.log(config);
+    // await axios.post("/api/users/logout", config);
+
     localStorage.removeItem("userInfo");
     dispatch({type: USER_LOGOUT});
     dispatch({type: USER_DETAILS_RESET});

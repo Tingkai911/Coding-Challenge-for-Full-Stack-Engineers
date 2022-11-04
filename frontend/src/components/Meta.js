@@ -12,7 +12,5 @@ export default function Meta({title, description, keywords}) {
 }
 
 Meta.defaultProps = {
-    title: "Welcome To Proshop",
-    description: "We sell the best products for cheap",
-    keywords: "electronics, buy electronics, cheap electronics",
+    title: "Mighty Jaxx",
 };

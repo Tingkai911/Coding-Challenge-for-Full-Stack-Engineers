@@ -20,7 +20,8 @@ router.route("/")
 router
     .post("/login", login);
 router
-    .post("/logout", logout)
+    .route("/logout")
+    .post(protect, logout)
 router
     .route("/profile")
     .get(protect, getUserProfile)

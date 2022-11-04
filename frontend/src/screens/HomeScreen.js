@@ -6,7 +6,7 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 import Paginate from "../components/Paginate";
 import Meta from "../components/Meta";
-import {createProduct, listProducts} from "../actions/productActions";
+import {listProducts} from "../actions/productActions";
 
 export default function HomeScreen({history, match}) {
     const keyword = match.params.keyword;
@@ -20,31 +20,17 @@ export default function HomeScreen({history, match}) {
     const productList = useSelector((state) => state.productList);
     const {loading, error, products, page, pages} = productList;
 
-    const productCreate = useSelector((state) => state.productCreate);
-    const {
-        loading: loadingCreate,
-        error: errorCreate,
-        success: successCreate,
-        product: createdProduct,
-    } = productCreate;
-
-    const createProductHandler = () => {
-        dispatch(createProduct());
-    };
-
     useEffect(() => {
         if (!userInfo) {
             // If the user is not login, redirect him to the login page
             history.push("/login");
         }
+        dispatch(listProducts(keyword, pageNumber));
+    }, [dispatch, history, userInfo, keyword, pageNumber]);
 
-        if (successCreate) {
-            // If the product is created successfully, redirect them to the edit product screen
-            history.push(`/admin/product/${createdProduct.sku}/edit`);
-        } else {
-            dispatch(listProducts(keyword, pageNumber));
-        }
-    }, [dispatch, history, userInfo, successCreate, keyword, pageNumber]);
+    const createProductHandler = () => {
+        history.push(`/admin/product/null/edit`);
+    }
 
     return (
         <>
@@ -59,8 +45,6 @@ export default function HomeScreen({history, match}) {
                     </Button>
                 </Col>
             </Row>
-            {loadingCreate && <Loader/>}
-            {errorCreate && <Message variant="danger">{errorCreate}</Message>}
             <h1>Latest Products</h1>
             {loading ? (
                 <Loader/>

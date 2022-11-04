@@ -6,7 +6,7 @@ import Loader from "../components/Loader";
 import {getUserDetails, updateUserProfile} from "../actions/userActions";
 import {USER_UPDATE_PROFILE_RESET} from "../constants/userConstants";
 
-export default function ProfileScreen({history, location}) {
+export default function UserProfileScreen({history, location}) {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -35,8 +35,8 @@ export default function ProfileScreen({history, location}) {
                 dispatch(getUserDetails("profile"));
             } else {
                 // If there is already a user, setState() to fill up the form
-                setName(user.name);
-                setEmail(user.email);
+                setName(userInfo.name);
+                setEmail(userInfo.email);
             }
         }
     }, [dispatch, history, userInfo, user, success]);

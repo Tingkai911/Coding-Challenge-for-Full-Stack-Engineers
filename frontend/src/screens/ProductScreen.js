@@ -16,6 +16,7 @@ import {
     listProductDetails,
 } from "../actions/productActions";
 import {LinkContainer} from "react-router-bootstrap";
+import {PRODUCT_DELETE_RESET} from "../constants/productConstants";
 
 export default function ProductScreen({history, match}) {
     const dispatch = useDispatch();
@@ -42,20 +43,19 @@ export default function ProductScreen({history, match}) {
     useEffect(() => {
         if (successDelete) {
             // If the product is deleted successfully, redirect them to the homescreen
+            dispatch({type: PRODUCT_DELETE_RESET});
             window.confirm("Product is deleted")
             history.push(`/`);
         } else {
             dispatch(listProductDetails(match.params.sku));
         }
-    }, [dispatch, match, successDelete]);
+    }, [dispatch, match, history, successDelete]);
 
     return (
         <>
             <Link to="/" className="btn btn-light my-3">
                 Go Back
             </Link>
-            {loadingDelete && <Loader/>}
-            {errorDelete && <Message variant="danger">{errorDelete}</Message>}
             {loading ? (
                 <Loader/>
             ) : error ? (

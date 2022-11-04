@@ -21,7 +21,7 @@ export default function Header() {
             <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
                 <Container>
                     <LinkContainer to="/">
-                        <Navbar.Brand>Proshop</Navbar.Brand>
+                        <Navbar.Brand>MJ Inventory</Navbar.Brand>
                     </LinkContainer>
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">
@@ -49,9 +49,6 @@ export default function Header() {
                                 <NavDropdown title="Admin" id="adminmenu">
                                     <LinkContainer to="/admin/userlist">
                                         <NavDropdown.Item>Users</NavDropdown.Item>
-                                    </LinkContainer>
-                                    <LinkContainer to="/admin/productlist">
-                                        <NavDropdown.Item>Products</NavDropdown.Item>
                                     </LinkContainer>
                                 </NavDropdown>
                             )}

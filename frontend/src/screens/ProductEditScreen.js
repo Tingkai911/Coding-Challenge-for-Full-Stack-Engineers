@@ -6,11 +6,11 @@ import {useDispatch, useSelector} from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import FormContainer from "../components/FormContainer";
-import {listProductDetails, updateProduct} from "../actions/productActions";
-import {PRODUCT_UPDATE_RESET} from "../constants/productConstants";
+import {listProductDetails, updateProduct, createProduct} from "../actions/productActions";
+import {PRODUCT_CREATE_RESET, PRODUCT_UPDATE_RESET} from "../constants/productConstants";
 
 export default function ProductEditScreen({history, match}) {
-    const sku = match.params.sku;
+    let sku = match.params.sku;
 
     const [title, setTitle] = useState("");
     const [image, setImage] = useState("");
@@ -28,30 +28,57 @@ export default function ProductEditScreen({history, match}) {
         success: successUpdate,
     } = productUpdate;
 
+    const productCreate = useSelector((state) => state.productCreate);
+    const {
+        loading: loadingCreate,
+        error: errorCreate,
+        success: successCreate,
+        product: createdProduct,
+    } = productCreate;
+
     useEffect(() => {
-        if (successUpdate) {
+        if (successCreate) {
+            // If the product is created successfully, redirect them to the product screen
+            sku = createdProduct.sku;
+            dispatch({type: PRODUCT_CREATE_RESET});
+            history.push(`/product/${sku}`)
+        } else if (successUpdate) {
             dispatch({type: PRODUCT_UPDATE_RESET});
             dispatch(listProductDetails(sku));
             history.push(`/product/${product.sku}`)
         } else {
-            if (!product || product.sku !== sku) {
+            if (sku === "null") {
+                setTitle("Sample Title");
+                setImage("/images/sample.jpg");
+            } else if (!product || product.sku !== sku) {
                 dispatch(listProductDetails(sku));
             } else {
                 setTitle(product.title);
                 setImage(product.image);
             }
         }
-    }, [dispatch, history, product, sku, successUpdate]);
+    }, [dispatch, history, product, sku, successUpdate, successCreate]);
 
     const submitHandler = (e) => {
         e.preventDefault();
-        dispatch(
-            updateProduct({
-                sku,
-                title,
-                image,
-            })
-        );
+        if (sku === "null") {
+            console.log("create")
+            dispatch(
+                createProduct({
+                    title,
+                    image,
+                })
+            );
+        } else {
+            console.log("update")
+            dispatch(
+                updateProduct({
+                    sku,
+                    title,
+                    image,
+                })
+            );
+        }
     };
 
     const uploadFileHandler = async (e) => {
@@ -80,13 +107,15 @@ export default function ProductEditScreen({history, match}) {
 
     return (
         <>
-            <Link to="/admin/productlist" className="btn btn-light my3">
+            <Link to="/" className="btn btn-light my3">
                 Go Back
             </Link>
             <FormContainer>
-                <h1>Edit Product</h1>
-                {loadingUpdate && <Loader/>}
-                {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
+                <h1>{sku === "null" ? "Create" : "Update"} Product</h1>
+                {sku !== "null" && loadingUpdate && <Loader/>}
+                {sku !== "null" && errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
+                {sku === "null" && loadingCreate && <Loader/>}
+                {sku === "null" && errorCreate && <Message variant="danger">{errorCreate}</Message>}
                 {loading ? (
                     <Loader/>
                 ) : error ? (
@@ -120,7 +149,7 @@ export default function ProductEditScreen({history, match}) {
                             {uploading && <Loader/>}
                         </Form.Group>
                         <Button type="submit" variant="primary">
-                            Update
+                            {sku === "null" ? "Create" : "Update"}
                         </Button>
                     </Form>
                 )}

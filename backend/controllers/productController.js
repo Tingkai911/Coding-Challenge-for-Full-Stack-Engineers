@@ -70,7 +70,7 @@ const createProduct = asyncHandler(async (req, res) => {
     const product = new Product({
         title: req.body.title || "Sample Product",
         user: req.user._id,
-        image: req.body.image || "sample.png",
+        image: req.body.image || "/images/sample.jpg",
         sku: uuidv4()
     });
 
