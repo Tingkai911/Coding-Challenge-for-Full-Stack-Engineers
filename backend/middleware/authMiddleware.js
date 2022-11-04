@@ -19,7 +19,6 @@ const protect = asyncHandler(async (req, res, next) => {
             // Check if token is in redis blacklist
             const key = String(cyrb53(token));
             const value = await redisClient.get(key);
-            console.log(value)
             if (value !== null) {
                 throw new Error("Token already in blacklist")
             }

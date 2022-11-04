@@ -77,9 +77,7 @@ export const logout = () => async (dispatch, getState) => {
         },
     };
 
-    // TODO: Not working, worry about this later
-    console.log(config);
-    // await axios.post("/api/users/logout", config);
+    await axios.post("/api/users/logout", {}, config);
 
     localStorage.removeItem("userInfo");
     dispatch({type: USER_LOGOUT});
