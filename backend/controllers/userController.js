@@ -119,6 +119,7 @@ const registerUser = asyncHandler(async (req, res) => {
         name,
         email,
         password,
+        isAdmin: true  // set to true for demo purposes, should default to false
     });
 
     if (user) {
