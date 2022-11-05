@@ -25,6 +25,7 @@ import {
     USER_UPDATE_REQUEST,
     USER_UPDATE_SUCCESS,
 } from "../constants/userConstants";
+import {PRODUCT_LIST_RESET} from "../constants/productConstants";
 
 export const login = (email, password) => async (dispatch) => {
     try {
@@ -64,26 +65,34 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 export const logout = () => async (dispatch, getState) => {
-    // Get the token
-    const {
-        userLogin: {userInfo},
-    } = getState();
+    try {
+        // Get the token
+        const {
+            userLogin: {userInfo},
+        } = getState();
 
-    // To send the content type and the token in the header
-    const config = {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${userInfo.token}`,
-        },
-    };
+        // To send the content type and the token in the header
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        };
 
-    await axios.post("/api/users/logout", {}, config);
-
-    localStorage.removeItem("userInfo");
-    dispatch({type: USER_LOGOUT});
-    dispatch({type: USER_DETAILS_RESET});
-    dispatch({type: USER_LIST_RESET});
-    document.location.href = "/login";
+        await axios.post("/api/users/logout", {}, config);
+    } catch (error) {
+        // Sometimes, admin delete the user before the user logout then the post request will fail as user is not found
+        console.error(error)
+    } finally {
+        // Still want to reset everything the moment the user logout to avoid user able to get information from cache after logout
+        localStorage.removeItem("userInfo");
+        dispatch({type: USER_LOGOUT});
+        dispatch({type: USER_DETAILS_RESET});
+        dispatch({type: USER_LIST_RESET});
+        dispatch({type: PRODUCT_LIST_RESET});
+        dispatch({type: PRODUCT_LIST_RESET});
+        document.location.href = "/login";
+    }
 };
 
 export const register = (name, email, password) => async (dispatch) => {

@@ -1,8 +1,9 @@
 import React from "react";
-import {Card} from "react-bootstrap";
+import {Button, Card} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import {LinkContainer} from "react-router-bootstrap";
 
-export default function Product({product}) {
+export default function Product({product, deleteHandler}) {
     return (
         <Card className="my-3 py-3">
             <Link to={`/product/${product.sku}`}>
@@ -13,6 +14,18 @@ export default function Product({product}) {
                     <Card.Title as="div">
                         <strong>{product.title}</strong>
                     </Card.Title>
+                    <LinkContainer to={`/admin/product/${product.sku}/edit`}>
+                        <Button variant="light" className="btn-sm">
+                            Edit
+                        </Button>
+                    </LinkContainer>
+                    <Button
+                        variant="danger"
+                        className="btn-sm"
+                        onClick={() => deleteHandler(product.sku)}
+                    >
+                        <i className="fas fa-trash"></i>
+                    </Button>
                 </Link>
             </Card.Body>
         </Card>

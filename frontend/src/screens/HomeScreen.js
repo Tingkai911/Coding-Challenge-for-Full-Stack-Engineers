@@ -6,7 +6,8 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 import Paginate from "../components/Paginate";
 import Meta from "../components/Meta";
-import {listProducts} from "../actions/productActions";
+import {deleteProduct, listProducts} from "../actions/productActions";
+import {PRODUCT_DELETE_RESET} from "../constants/productConstants";
 
 export default function HomeScreen({history, match}) {
     const keyword = match.params.keyword;
@@ -20,13 +21,30 @@ export default function HomeScreen({history, match}) {
     const productList = useSelector((state) => state.productList);
     const {loading, error, products, page, pages} = productList;
 
+    const productDelete = useSelector((state) => state.productDelete);
+    const {
+        loading: loadingDelete,
+        error: errorDelete,
+        success: successDelete,
+    } = productDelete;
+
+    const deleteHandler = (id) => {
+        if (window.confirm("Are you sure")) {
+            dispatch(deleteProduct(id));
+        }
+    };
+
     useEffect(() => {
         if (!userInfo) {
             // If the user is not login, redirect him to the login page
             history.push("/login");
         }
+        if (successDelete) {
+            dispatch({type: PRODUCT_DELETE_RESET});
+            window.confirm("Product is deleted")
+        }
         dispatch(listProducts(keyword, pageNumber));
-    }, [dispatch, history, userInfo, keyword, pageNumber]);
+    }, [dispatch, history, userInfo, keyword, pageNumber, successDelete]);
 
     const createProductHandler = () => {
         history.push(`/admin/product/null/edit`);
@@ -45,6 +63,8 @@ export default function HomeScreen({history, match}) {
                     </Button>
                 </Col>
             </Row>
+            {loadingDelete && <Loader/>}
+            {errorDelete && <Message variant="danger">{errorDelete}</Message>}
             {loading ? (
                 <Loader/>
             ) : error ? (
@@ -54,7 +74,7 @@ export default function HomeScreen({history, match}) {
                     <Row>
                         {products.map((product) => (
                             <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                                <Product product={product}/>
+                                <Product product={product} deleteHandler={deleteHandler}/>
                             </Col>
                         ))}
                     </Row>
