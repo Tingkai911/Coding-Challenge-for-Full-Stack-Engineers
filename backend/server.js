@@ -34,7 +34,13 @@ const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 if (process.env.NODE_ENV === "production") {
-    console.log("PRODUCTION".red.bold)
+    // Make the build folder a static folder
+    app.use(express.static(path.join(__dirname, "/frontend/build")));
+
+    // Any routes that is not any of the above will come here and load our index.html
+    app.get("*", (req, res) =>
+        res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
+    );
 } else {
     // In development
     app.get("/", (req, res) => {
