@@ -88,6 +88,17 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
         const updatedUser = await user.save();
 
+        const token = req.headers.authorization.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const timeNow = Math.round(Date.now() / 1000)  // Change from ms to s
+        const expiry = decoded.exp  // in s
+        const ttl = expiry - timeNow
+        const key = String(cyrb53(token))  // Key is too long, use a hash function to cut short
+        if (ttl > 0) {
+            // Add old token to redis blacklist
+            await redisClient.setEx(key, ttl, token)
+        }
+
         res.json({
             _id: updatedUser._id,
             name: updatedUser.name,
