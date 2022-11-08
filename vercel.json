@@ -5,11 +5,11 @@
       "use": "@vercel/node"
     }
   ],
-
   "routes": [
     {
       "src": "/(.*)",
       "dest": "backend/server.js"
     }
-  ]
+  ],
+  "buildCommand": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
 }
