@@ -101,6 +101,7 @@ export default function ProductEditScreen({history, match}) {
             const config = {
                 headers: {
                     "Content-Type": "multipart/form-data",
+                    "Authorization": `Bearer ${userInfo.token}`,
                 },
             };
 
@@ -110,6 +111,7 @@ export default function ProductEditScreen({history, match}) {
             setUploading(false);
         } catch {
             console.error(error);
+            window.confirm("Not authorized as an admin")
             setUploading(false);
         }
     };

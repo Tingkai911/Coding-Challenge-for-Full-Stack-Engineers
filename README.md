@@ -34,4 +34,54 @@ The purpose of this code challenge is to build an admin dashboard with authentic
 ## Bonus
 Bonus points for adding a search bar in the admin dashboard to search for products. 
 
+## Design
 
+![Design](https://raw.githubusercontent.com/Tingkai911/Coding-Challenge-for-Full-Stack-Engineers/dev/mighty%20jax.drawio.png)
+
+## Environment Variables
+```text
+NODE_ENV=development
+PORT=8080
+TEST_PASSWORD=
+JWT_SECRET=
+MONGO_URI=
+REDIS_HOST=
+REDIS_PORT=
+REDIS_PASSWORD=
+```
+
+## Running in Local
+Backend only (with nodemon):
+```text
+npm run server
+```
+Backend only (without nodemon):
+```text
+npm run start
+```
+Frontend only:
+```text
+npm run client
+```
+Both backend and frontend:
+```text
+npm run dev
+```
+Seed/Import data in DB:
+```text
+npm run data:import
+```
+Delete data in DB:
+```text
+npm run data:destroy
+```
+
+## Build and Deploy
+Step 1: Download Dependencies (backend and frontend respectively) and build react scripts
+```text
+npm install && npm install --prefix frontend && npm run build --prefix frontend
+```
+Step 2: Start the application
+```text
+node backend/server.js
+```
